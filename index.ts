@@ -5,8 +5,11 @@ const server = http.createServer();
 
 
 server.on('request', (request: IncomingMessage, response: ServerResponse) => {
+    console.log(request.method)
+    console.log(request.url)
+    console.log(request.headers)
     const arr = [];
-    request.on('data', (chunk) => {
+    request.on('data', (chunk: Buffer) => {
         arr.push(chunk);
     })
 
