@@ -8,6 +8,7 @@ const server = http.createServer();
 
 
 const publicDir = path.resolve(__dirname, 'public')
+let cacheAge = 3600 * 24 *365
 server.on('request', (request: IncomingMessage, response: ServerResponse) => {
     const {method, url: path2, headers} = request
     const obj = url.parse(path2);
@@ -40,6 +41,7 @@ server.on('request', (request: IncomingMessage, response: ServerResponse) => {
                 response.end('服务器繁忙')
             }
         } else {
+            response.setHeader('Cache-Control', `public, max-age=${cacheAge}`)
             response.end(data)
 
         }
