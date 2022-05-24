@@ -1,31 +1,37 @@
 import * as http from "http";
 import {IncomingMessage, ServerResponse} from "http";
+import path = require("path");
+import * as fs from "fs";
 
 const server = http.createServer();
 
 
+const publicDir = path.resolve(__dirname, 'public')
 server.on('request', (request: IncomingMessage, response: ServerResponse) => {
-    console.log(request.method)
-    console.log(request.url)
-    console.log(request.headers)
-    const arr = [];
-    request.on('data', (chunk: Buffer) => {
-        arr.push(chunk);
-    })
+    const {method, url, headers} = request
+    switch (url) {
+        case '/index.html':
+            response.setHeader('Content-Type', 'text/html; charset=utf-8');
+            fs.readFile(path.resolve(publicDir, 'index.html'), (error, data) => {
+                if (error) throw error
+                response.end(data.toString())
+            })
+            break
+        case '/style.css':
+            fs.readFile(path.resolve(publicDir, 'style.css'), (error, data) => {
+                if (error) throw error
+                response.setHeader('Content-Type', 'text/css; charset=utf-8')
+                response.end(data.toString())
+            })
+            break
+        case '/main.js':
+            fs.readFile(path.resolve(publicDir, 'main.js'), (error, data) => {
+                if (error) throw error
+                response.setHeader('Content-Type', 'text/javascript; charset=utf-8')
+                response.end(data.toString())
+            })
+            break
+    }
 
-    request.on('end', () => {
-        const body = Buffer.concat(arr).toString();
-        console.log(body)
-        response.statusCode = 400;
-        response.setHeader('x-name','wsl')
-        response.write('1\n')
-        response.write('2\n')
-        response.write('3\n')
-        response.write('4\n')
-
-        response.end('hi')
-    })
 })
-
-
 server.listen('8888')
