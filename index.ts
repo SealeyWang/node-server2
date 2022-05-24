@@ -13,6 +13,12 @@ server.on('request', (request: IncomingMessage, response: ServerResponse) => {
     const obj = url.parse(path2);
     const {pathname, search} = obj;
 
+    if(method !== 'GET') {
+        response.statusCode = 405
+        response.end()
+        return
+    }
+
     let filename = pathname.substring(1);
 
     if(filename === '') {
