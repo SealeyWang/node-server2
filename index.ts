@@ -16,6 +16,13 @@ server.on('request', (request: IncomingMessage, response: ServerResponse) => {
     request.on('end', () => {
         const body = Buffer.concat(arr).toString();
         console.log(body)
+        response.statusCode = 400;
+        response.setHeader('x-name','wsl')
+        response.write('1\n')
+        response.write('2\n')
+        response.write('3\n')
+        response.write('4\n')
+
         response.end('hi')
     })
 })
